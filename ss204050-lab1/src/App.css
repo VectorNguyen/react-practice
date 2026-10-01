@@ -1,0 +1,193 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: white;
+  color: #292d32;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Navbar */
+
+.navbar {
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 0 38px;
+  background-color: rgb(43, 29, 240);
+}
+
+.navbar a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 24px;
+}
+
+/* Nội dung chính */
+
+.container {
+  width: calc(100% - 60px);
+  max-width: 1660px;
+  margin: 38px auto;
+}
+
+.container h1 {
+  margin: 0 0 36px;
+  color: #0d0d0e;
+  font-size: 46px;
+  font-weight: bold;
+}
+
+/* Danh sách card */
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+}
+
+/* Card */
+
+.lesson-card {
+  min-height: 740px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  background-color: white;
+}
+
+/* Ảnh hiển thị đầy đủ */
+
+.lesson-image {
+  width: 100%;
+  height: 375px;
+  display: block;
+  object-fit: contain;
+}
+
+/* Nội dung card */
+
+.lesson-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-title {
+  min-height: 68px;
+  margin: 20px 0 14px;
+  color: #000000;
+  font-size: 29px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.lesson-content p {
+  margin: 9px 0;
+  color: #000000;
+  font-size: 23px;
+}
+
+/* Trạng thái */
+
+.completed,
+.not-completed {
+  width: fit-content;
+  margin-top: 15px;
+  padding: 6px 13px;
+  border-radius: 8px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.completed {
+  background-color: #3d8b5b;
+}
+
+.not-completed {
+  background-color: #f7b82b;
+}
+
+/* Nút */
+
+button {
+  width: 100%;
+  margin-top: auto;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background-color: #326cf0;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1d55d0;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    height: auto;
+    gap: 18px;
+    padding: 20px 15px;
+    flex-wrap: wrap;
+  }
+
+  .navbar a {
+    font-size: 16px;
+  }
+
+  .container {
+    width: calc(100% - 30px);
+  }
+
+  .lesson-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container h1 {
+    font-size: 34px;
+  }
+}
+.container h1,
+.lesson-title,
+.lesson-content p {
+  color: #292d32;
+}
+
+.view-detail-btn {
+  background-color: #326cf0;
+  color: white;
+  border: none;
+}
+
+.lesson-image {
+  object-fit: contain;
+}
+#root {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.navbar {
+  width: 100%;
+}
