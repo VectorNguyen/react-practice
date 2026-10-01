@@ -1,0 +1,29 @@
+/* Thanh menu màu đen, chữ xanh */
+.navbar-custom {
+  display: flex;
+  gap: 48px;
+  padding: 24px 38px;
+  background-color: #000000;
+}
+
+.navbar-custom a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+/* Cột Action: 2 nút nằm cùng hàng */
+.action-col {
+  white-space: nowrap;
+  width: 180px;
+}
+
+/* Cột ảnh */
+.image-col {
+  width: 180px;
+}
+
+.lesson-img {
+  width: 140px;
+  height: auto;
+}
