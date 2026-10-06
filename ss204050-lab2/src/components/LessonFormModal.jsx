@@ -2,13 +2,13 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-// Các luật kiểm tra dữ liệu (validation)
+// Luật kiểm tra dữ liệu (Yup)
 const schema = Yup.object({
   lessonTitle: Yup.string().required("Title is required."),
   lessonImage: Yup.string().required("Lesson image URL is required."),
   estimatedTime: Yup.number()
-    .required("Estimated time is required.")
     .typeError("Estimated time must be a number.")
+    .required("Estimated time is required.")
     .min(1, "Estimated time must be at least 1 minute."),
   level: Yup.string()
     .required("Please select a valid level.")
@@ -26,20 +26,30 @@ const emptyLesson = {
 
 function LessonFormModal({ show, lesson, onClose, onSave }) {
   // lesson = null  -> đang thêm mới
-  // lesson có dữ liệu -> đang sửa, điền sẵn vào form
+  // lesson có dữ liệu -> đang sửa
   const isEdit = lesson !== null;
 
+  let startValues = emptyLesson;
+  if (isEdit) {
+    startValues = lesson;
+  }
+
   const formik = useFormik({
-    initialValues: isEdit ? lesson : emptyLesson,
-    enableReinitialize: true, // đổi bài cần sửa thì form tự cập nhật dữ liệu
+    initialValues: startValues,
+    // Đổi bài cần sửa thì form tự nạp lại dữ liệu của bài đó
+    enableReinitialize: true,
     validationSchema: schema,
-    onSubmit: (values, { resetForm }) => {
-      onSave({ ...values, estimatedTime: Number(values.estimatedTime) });
-      resetForm(); // lưu xong thì làm sạch form cho lần sau
+    onSubmit: (values) => {
+      const lessonData = {
+        ...values,
+        estimatedTime: Number(values.estimatedTime), // ô input trả về chuỗi, đổi sang số
+      };
+      onSave(lessonData);
+      formik.resetForm(); // lưu xong thì làm sạch form
     },
   });
 
-  // Đóng modal thì xoá lỗi và dữ liệu đang nhập
+  // Đóng modal: xoá dữ liệu đang nhập và lỗi, rồi báo cho App đóng
   const handleClose = () => {
     formik.resetForm();
     onClose();
@@ -51,7 +61,7 @@ function LessonFormModal({ show, lesson, onClose, onSave }) {
         <Modal.Title>{isEdit ? "Edit Lesson" : "Add Lesson"}</Modal.Title>
       </Modal.Header>
 
-      <Form noValidate onSubmit={formik.handleSubmit}>
+      <Form onSubmit={formik.handleSubmit}>
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>
@@ -62,7 +72,7 @@ function LessonFormModal({ show, lesson, onClose, onSave }) {
               placeholder="Enter lesson title"
               value={formik.values.lessonTitle}
               onChange={formik.handleChange}
-              isInvalid={formik.touched.lessonTitle && !!formik.errors.lessonTitle}
+              isInvalid={formik.touched.lessonTitle && formik.errors.lessonTitle}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.lessonTitle}
@@ -78,7 +88,7 @@ function LessonFormModal({ show, lesson, onClose, onSave }) {
               placeholder="Enter lesson image URL"
               value={formik.values.lessonImage}
               onChange={formik.handleChange}
-              isInvalid={formik.touched.lessonImage && !!formik.errors.lessonImage}
+              isInvalid={formik.touched.lessonImage && formik.errors.lessonImage}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.lessonImage}
@@ -94,7 +104,7 @@ function LessonFormModal({ show, lesson, onClose, onSave }) {
               name="estimatedTime"
               value={formik.values.estimatedTime}
               onChange={formik.handleChange}
-              isInvalid={formik.touched.estimatedTime && !!formik.errors.estimatedTime}
+              isInvalid={formik.touched.estimatedTime && formik.errors.estimatedTime}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.estimatedTime}
@@ -109,7 +119,7 @@ function LessonFormModal({ show, lesson, onClose, onSave }) {
               name="level"
               value={formik.values.level}
               onChange={formik.handleChange}
-              isInvalid={formik.touched.level && !!formik.errors.level}
+              isInvalid={formik.touched.level && formik.errors.level}
             >
               <option value="">Select level</option>
               <option value="N5">N5</option>

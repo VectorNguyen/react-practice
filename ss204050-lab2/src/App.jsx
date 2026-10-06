@@ -7,7 +7,7 @@ import DeleteModal from "./components/DeleteModal";
 import "./App.css";
 
 function App() {
-  // Danh sách bài học (lấy từ file JSON làm dữ liệu ban đầu)
+  // Danh sách bài học, ban đầu lấy từ file JSON
   const [lessons, setLessons] = useState(data);
 
   // Modal thêm / sửa
@@ -19,14 +19,20 @@ function App() {
   const [deletingLesson, setDeletingLesson] = useState(null);
 
   // Thông báo (alert)
-  const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertVariant, setAlertVariant] = useState("success");
 
-  // Hiện alert rồi tự ẩn sau 3 giây
+  // Hiện thông báo, 3 giây sau tự ẩn
   const showAlert = (message, variant) => {
-    setAlert({ show: true, message: message, variant: variant });
+    setAlertMessage(message);
+    setAlertVariant(variant);
     setTimeout(() => {
-      setAlert({ show: false, message: "", variant: "success" });
+      setAlertMessage("");
     }, 3000);
+  };
+
+  const handleCloseAlert = () => {
+    setAlertMessage("");
   };
 
   // ----- THÊM -----
@@ -41,18 +47,25 @@ function App() {
     setShowForm(true);
   };
 
-  // Khi bấm Save changes trong form (dùng chung cho thêm và sửa)
+  const handleCloseForm = () => {
+    setShowForm(false);
+  };
+
+  // Bấm "Save changes" trong form (dùng chung cho thêm và sửa)
   const handleSave = (values) => {
     if (editingLesson === null) {
-      // Thêm mới: tạo id mới
+      // Thêm mới: tạo id mới bằng thời gian hiện tại để không bị trùng
       const newLesson = { ...values, id: String(Date.now()) };
       setLessons([...lessons, newLesson]);
       showAlert("Add lesson successfully!", "success");
     } else {
-      // Sửa: thay bài có id trùng bằng dữ liệu mới
-      const newList = lessons.map((item) =>
-        item.id === editingLesson.id ? { ...values, id: item.id } : item
-      );
+      // Sửa: bài nào trùng id thì thay bằng dữ liệu mới
+      const newList = lessons.map((item) => {
+        if (item.id === editingLesson.id) {
+          return { ...values, id: item.id };
+        }
+        return item;
+      });
       setLessons(newList);
       showAlert("Update lesson successfully!", "success");
     }
@@ -65,9 +78,15 @@ function App() {
     setShowDelete(true);
   };
 
+  const handleCloseDelete = () => {
+    setShowDelete(false);
+  };
+
   const handleConfirmDelete = () => {
+    // Giữ lại những bài có id khác bài cần xoá
     const newList = lessons.filter((item) => item.id !== deletingLesson.id);
 
+    // Danh sách ngắn đi nghĩa là đã xoá được
     if (newList.length < lessons.length) {
       setLessons(newList);
       showAlert("Delete lesson successfully!", "success");
@@ -88,13 +107,9 @@ function App() {
       <Container className="mt-4">
         <h1 className="mb-4">Lesson List</h1>
 
-        {alert.show && (
-          <Alert
-            variant={alert.variant}
-            onClose={() => setAlert({ ...alert, show: false })}
-            dismissible
-          >
-            {alert.message}
+        {alertMessage && (
+          <Alert variant={alertVariant} onClose={handleCloseAlert} dismissible>
+            {alertMessage}
           </Alert>
         )}
 
@@ -114,14 +129,14 @@ function App() {
       <LessonFormModal
         show={showForm}
         lesson={editingLesson}
-        onClose={() => setShowForm(false)}
+        onClose={handleCloseForm}
         onSave={handleSave}
       />
 
       <DeleteModal
         show={showDelete}
         lesson={deletingLesson}
-        onClose={() => setShowDelete(false)}
+        onClose={handleCloseDelete}
         onConfirm={handleConfirmDelete}
       />
     </>

@@ -8,8 +8,8 @@ function DeleteModal({ show, lesson, onClose, onConfirm }) {
       </Modal.Header>
 
       <Modal.Body>
-        Are you sure you want to delete "{lesson ? lesson.lessonTitle : ""}"? This
-        action cannot be undone.
+        Are you sure you want to delete "{lesson?.lessonTitle}"? This action
+        cannot be undone.
       </Modal.Body>
 
       <Modal.Footer>
