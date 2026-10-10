@@ -4,6 +4,12 @@
   gap: 48px;
   padding: 24px 38px;
   background-color: #000000;
+  align-items: center;
+}
+
+/* Nút Login nằm sát bên phải thanh menu */
+.login-btn {
+  margin-left: auto;
 }
 
 .navbar-custom a {

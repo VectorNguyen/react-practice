@@ -4,6 +4,7 @@ import data from "./jlpt_lessons.json";
 import LessonTable from "./components/LessonTable";
 import LessonFormModal from "./components/LessonFormModal";
 import DeleteModal from "./components/DeleteModal";
+import LoginModal from "./components/LoginModal";
 import "./App.css";
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
   // Modal xoá
   const [showDelete, setShowDelete] = useState(false);
   const [deletingLesson, setDeletingLesson] = useState(null);
+
+  // Modal đăng nhập
+  const [showLogin, setShowLogin] = useState(false);
 
   // Thông báo (alert)
   const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
@@ -59,6 +63,12 @@ function App() {
     setShowForm(false);
   };
 
+  // ----- ĐĂNG NHẬP -----
+  const handleLogin = (values) => {
+    setShowLogin(false);
+    showAlert(`Login successfully! Welcome ${values.email}`, "success");
+  };
+
   // ----- XOÁ -----
   const handleDeleteClick = (lesson) => {
     setDeletingLesson(lesson);
@@ -83,6 +93,14 @@ function App() {
         <a href="#">Home</a>
         <a href="#">Lesson Management</a>
         <a href="#">Completed Lesson</a>
+
+        <Button
+          variant="outline-primary"
+          className="login-btn"
+          onClick={() => setShowLogin(true)}
+        >
+          Login
+        </Button>
       </nav>
 
       <Container className="mt-4">
@@ -123,6 +141,12 @@ function App() {
         lesson={deletingLesson}
         onClose={() => setShowDelete(false)}
         onConfirm={handleConfirmDelete}
+      />
+
+      <LoginModal
+        show={showLogin}
+        onClose={() => setShowLogin(false)}
+        onLogin={handleLogin}
       />
     </>
   );
