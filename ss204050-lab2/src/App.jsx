@@ -6,10 +6,12 @@ import LessonFormModal from "./components/LessonFormModal";
 import DeleteModal from "./components/DeleteModal";
 import LoginModal from "./components/LoginModal";
 import "./App.css";
+import apisLogin from "./axios/index.Jsx";
 
 function App() {
   // Danh sách bài học (lấy từ file JSON làm dữ liệu ban đầu)
   const [lessons, setLessons] = useState(data);
+  const [profile, setProfile] = useState({});
 
   // Modal thêm / sửa
   const [showForm, setShowForm] = useState(false);
@@ -64,10 +66,33 @@ function App() {
   };
 
   // ----- ĐĂNG NHẬP -----
-  const handleLogin = (values) => {
-    setShowLogin(false);
-    showAlert(`Login successfully! Welcome ${values.email}`, "success");
+  const handleLogin = async (values) => {
+    try {
+      const { data } = await apisLogin.post("/login", {
+        email: values.email,
+        password: values.password,
+      });
+      localStorage.setItem("token", data?.token);
+      console.log("Login response:", data);
+
+      const {data:profile} = await apisLogin.get("/profile", {
+        headers: { Authorization: `Bearer ${data?.token}` },
+      });
+      setProfile(profile.user);
+      
+      setShowLogin(false);
+      showAlert(`Login successfully! Welcome ${values.email}`, "success");
+
+      console.log("Profile:", profile.data);
+    } catch (error) {
+      console.log(error);
+      showAlert(
+        error.response?.data?.message || "Email or password is incorrect!",
+        "danger"
+      );
+    }
   };
+
 
   // ----- XOÁ -----
   const handleDeleteClick = (lesson) => {
@@ -93,14 +118,25 @@ function App() {
         <a href="#">Home</a>
         <a href="#">Lesson Management</a>
         <a href="#">Completed Lesson</a>
-
+{profile.email ? (
+  <>
+        <span className="profile-info">
+          Logged in as: {profile.email}
+        </span>
+        <Button
+          variant="outline-danger"
+          className="logout-btn"
+          onClick={() =>{ localStorage.removeItem("token") ; setProfile({})}}
+          >Logout</Button>
+        </>
+      ) :
         <Button
           variant="outline-primary"
           className="login-btn"
           onClick={() => setShowLogin(true)}
         >
           Login
-        </Button>
+        </Button>}
       </nav>
 
       <Container className="mt-4">
